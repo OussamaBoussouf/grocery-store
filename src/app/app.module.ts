@@ -14,6 +14,10 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderSuccessComponent } from './order-success/order-success.component';
 import { LoginComponent } from './login/login.component';
 import { ProductsComponent } from './products/products.component';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment.development';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,11 @@ import { ProductsComponent } from './products/products.component';
     NgbModule,
     NgbDropdownModule
   ],
-  providers: [],
+  providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
