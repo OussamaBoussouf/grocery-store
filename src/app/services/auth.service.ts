@@ -8,9 +8,10 @@ import {
   signOut,
   User,
 } from '@angular/fire/auth';
-import { doc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
-import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { UserService } from './user.service';
+
 
 @Injectable({
   providedIn: 'root',
@@ -18,12 +19,14 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService implements OnDestroy {
   private connectedUser = new BehaviorSubject<User | null>(null);
   private unsubscribeAuthState: (() => void) | null = null;
-  user$ = this.connectedUser.asObservable();
+
+  private user$ = this.connectedUser.asObservable();
 
   constructor(
     private auth: Auth,
-    private firestore: Firestore,
-    private router: Router
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.unsubscribeAuthState = onAuthStateChanged(this.auth, (user) => {
       this.connectedUser.next(user);
@@ -34,25 +37,29 @@ export class AuthService implements OnDestroy {
     if (this.unsubscribeAuthState) this.unsubscribeAuthState();
   }
 
-  async signInWithGoogle() {
+  get appUser$(){
+    return this.user$.pipe(
+      switchMap(user => {
+        return this.userService.get(user?.uid);
+      })
+    )
+  }
+
+  async logInWithGoogle() {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(this.auth, provider);
       const user = result.user;
 
-      //IF THE USER DOESN'T EXIST ON OUR FIREBASE DB CREATES THAT USER RECORD OTHERWISE SKIP
-      const userExistInDB = (
-        await getDoc(doc(this.firestore, `users/${user.uid}`))
-      ).exists();
-      if (!userExistInDB) {
-        await setDoc(doc(this.firestore, `users/${user.uid}`), {
-          email: user.email,
-          name: user.displayName,
-          isAdmin: false,
-        });
-      }
+      //save user records to db if it doesn't already exist
+      const appUser = await this.userService.save(user);
 
-      this.router.navigate(['/']);
+      localStorage.setItem('user', JSON.stringify(appUser));
+    
+
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+      this.router.navigateByUrl(returnUrl);
     } catch (error) {
       if (error instanceof FirebaseError) {
         console.log(error.code, error.message);
@@ -62,9 +69,11 @@ export class AuthService implements OnDestroy {
     }
   }
 
-  async signOut() {
+  async logOut() {
     try {
       await signOut(this.auth);
+      localStorage.removeItem('user');
+      this.router.navigate(['/']);
     } catch (error) {
       if (error instanceof FirebaseError) {
         console.log(error.code, error.message);

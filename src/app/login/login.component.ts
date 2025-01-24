@@ -7,11 +7,11 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
+  constructor(
+    private authService: AuthService,
+  ) {}
 
-  constructor(private authService: AuthService) {
-  }
-
-  signIn() {
-    this.authService.signInWithGoogle();
+  logIn() {
+    this.authService.logInWithGoogle();
   }
 }

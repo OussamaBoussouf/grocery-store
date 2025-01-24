@@ -22,11 +22,7 @@
             <a class="nav-link" routerLink="login">Login</a>
           </li>
         </ng-template>
-        <li
-          *ngIf="user$ | async as username; else guest"
-          ngbDropdown
-          class="nav-item dropdown"
-        >
+        <li *ngIf="appUser; else guest" ngbDropdown class="nav-item dropdown">
           <a
             ngbDropdownToggle
             class="nav-link dropdown-toggle"
@@ -34,22 +30,24 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            {{ username.displayName }}
+            {{ appUser.name }}
           </a>
           <ul ngbDropdownMenu class="dropdown-menu">
             <li>
               <a class="dropdown-item" routerLink="/my/orders">My Orders</a>
             </li>
-            <li>
-              <a class="dropdown-item" routerLink="/admin/orders"
-                >Manage Orders</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/admin/products"
-                >Manage Products</a
-              >
-            </li>
+            <ng-container *ngIf="appUser.isAdmin">
+              <li>
+                <a class="dropdown-item" routerLink="/admin/orders"
+                  >Manage Orders</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/admin/products"
+                  >Manage Products</a
+                >
+              </li>
+            </ng-container>
             <li>
               <a class="dropdown-item" role="button" (click)="logout()"
                 >Log Out</a
