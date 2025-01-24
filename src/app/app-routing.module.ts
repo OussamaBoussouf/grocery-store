@@ -9,35 +9,44 @@ import { LoginComponent } from './login/login.component';
 import { OrderSuccessComponent } from './order-success/order-success.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductsComponent } from './products/products.component';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { isLoggedInGuard } from './guards/is-logged-in.guard';
 
 const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [isLoggedInGuard]
+  },
   {
     path: 'products',
     component: ProductsComponent,
   },
   {
-    path: 'check-out',
-    component: CheckoutComponent,
-  },
-  {
     path: 'order-success',
     component: OrderSuccessComponent,
+    canActivate: [authGuard],
   },
   {
-    path: 'login',
-    component: LoginComponent,
+    path: 'check-out',
+    component: CheckoutComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'admin/orders',
     component: AdminOrdersComponent,
+    canActivate: [authGuard, adminGuard],
   },
   {
     path: 'admin/products',
     component: AdminProductsComponent,
+    canActivate: [authGuard, adminGuard],
   },
   {
     path: 'my/orders',
     component: MyOrdersComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'shopping-cart',
@@ -46,6 +55,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    pathMatch: 'full'
   },
   {
     path: '**',
