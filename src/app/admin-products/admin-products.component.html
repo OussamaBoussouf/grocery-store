@@ -1,1 +1,62 @@
-<p>admin-products works!</p>
+<button class="btn btn-primary mb-4">New Product</button>
+<input
+  (keyup)="search(inputEle.value)"
+  #inputEle
+  type="text"
+  placeholder="Search..."
+  class="form-control mb-4"
+  aria-describedby="search"
+/>
+<div style="width: 130px" class="input-group float-end mb-3">
+  <span class="input-group-text">Limit</span>
+  <select
+    ngModel
+    name="pageSize"
+    [(ngModel)]="pageSize"
+    (change)="updateStartEndResult()"
+    class="form-select"
+    aria-label="Default select example"
+  >
+    <option value="5" selected>5</option>
+    <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+  </select>
+</div>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col" (click)="sortColumn('food')">
+        <a role="button">Title</a>
+      </th>
+      <th scope="col" (click)="sortColumn('price')">
+        <a role="button">Price</a>
+      </th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngIf="collectionSize === 0" class="text-center">
+      <td colspan="4">No result found</td>
+    </tr>
+    <tr *ngFor="let product of allProducts">
+      <td>{{ product.id }}</td>
+      <td>{{ product.food }}</td>
+      <td>{{ product.price }}</td>
+      <td>Edit</td>
+    </tr>
+  </tbody>
+</table>
+<div class="d-flex justify-content-between">
+  <span
+    >Results: {{ resultStart }} - {{ resultEnd }} / {{ collectionSize }}</span
+  >
+  <ngb-pagination
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    (pageChange)="updateStartEndResult()"
+    aria-label="Default pagination"
+  />
+</div>
