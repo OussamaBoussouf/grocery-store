@@ -1,6 +1,7 @@
-<button class="btn btn-primary mb-4">New Product</button>
+<a routerLink="/admin/products/new" class="btn btn-primary mb-4">New Product</a>
 <input
-  (keyup)="search(inputEle.value)"
+  ngModel
+  [(ngModel)]="searchedTerm"
   #inputEle
   type="text"
   placeholder="Search..."
@@ -17,7 +18,7 @@
     class="form-select"
     aria-label="Default select example"
   >
-    <option value="5" selected>5</option>
+    <option value="5">5</option>
     <option value="10">10</option>
     <option value="15">15</option>
     <option value="20">20</option>
@@ -27,7 +28,7 @@
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col" (click)="sortColumn('food')">
+      <th scope="col" (click)="sortColumn('title')">
         <a role="button">Title</a>
       </th>
       <th scope="col" (click)="sortColumn('price')">
@@ -37,18 +38,18 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngIf="collectionSize === 0" class="text-center">
-      <td colspan="4">No result found</td>
-    </tr>
     <tr *ngFor="let product of allProducts">
       <td>{{ product.id }}</td>
-      <td>{{ product.food }}</td>
+      <td>{{ product.title }}</td>
       <td>{{ product.price }}</td>
       <td>Edit</td>
     </tr>
+    <tr *ngIf="allProducts.length === 0" class="text-center">
+      <td colspan="4">No result found</td>
+    </tr>
   </tbody>
 </table>
-<div class="d-flex justify-content-between">
+<div *ngIf="collectionSize !== 0" class="d-flex justify-content-between">
   <span
     >Results: {{ resultStart }} - {{ resultEnd }} / {{ collectionSize }}</span
   >

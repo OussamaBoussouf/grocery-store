@@ -1,41 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  DoCheck,
+  OnInit,
+} from '@angular/core';
+import { ProductService } from '../services/product.service';
 
 interface IProduct {
-  id: number;
-  food: string;
+  id?: number;
+  image: string;
+  title: string;
   price: number;
+  category: string;
 }
-
-const PRODUCTS = [
-  {
-    food: 'Spanich',
-    price: 2.5,
-  },
-  {
-    food: 'Avocado',
-    price: 3.0,
-  },
-  {
-    food: 'Tomato',
-    price: 1.0,
-  },
-  {
-    food: 'Salt',
-    price: 0.5,
-  },
-  {
-    food: 'Onion',
-    price: 0.5,
-  },
-  {
-    food: 'Pepper',
-    price: 5.0,
-  },
-  {
-    food: 'Black Pepper',
-    price: 2.1,
-  },
-];
 
 @Component({
   selector: 'app-admin-products',
@@ -43,45 +21,40 @@ const PRODUCTS = [
   styleUrl: './admin-products.component.css',
 })
 export class AdminProductsComponent implements OnInit {
-  products: IProduct[];
-  resultStart : number;
-  resultEnd:number;
+  products: IProduct[] = [];
+  searchedTerm = '';
+  resultStart: number;
+  resultEnd: number;
   sortDirection = '';
   page = 1;
   pageSize = 5;
-  collectionSize = PRODUCTS.length;
+  collectionSize = this.products.length;
+
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.products = PRODUCTS.map((product, i) => ({
-      id: i + 1,
-      ...product,
-    }));
-    this.updateStartEndResult();
+    this.productService.getAllProducs().subscribe((data) => {
+      this.products = data.map((product, index) => ({
+        id: index + 1,
+        ...product,
+      }));
+      this.collectionSize = data.length;
+      this.updateStartEndResult();
+    });
   }
 
   sortColumn(columnName: keyof IProduct) {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
 
-    this.products = PRODUCTS.map((product, i) => ({
-      id: i + 1,
-      ...product,
-    })).sort((a, b) => {
-      const res = this.comapre(a[columnName], b[columnName]);
-      return this.sortDirection === 'asc' ? res : -res;
-    });
-  }
-
-  search(term: string) {
-    this.products = PRODUCTS.map((product, i) => ({
-      id: i + 1,
-      ...product,
-    })).filter((product) =>
-      product.food.toLowerCase().includes(term.toLowerCase())
-    );
-
-    this.collectionSize = this.products.length;
-
-    this.updateStartEndResult();
+    this.products = this.products
+      .map((product, i) => ({
+        id: i + 1,
+        ...product,
+      }))
+      .sort((a, b) => {
+        const res = this.comapre(a[columnName], b[columnName]);
+        return this.sortDirection === 'asc' ? res : -res;
+      });
   }
 
   updateStartEndResult() {
@@ -101,7 +74,17 @@ export class AdminProductsComponent implements OnInit {
   }
 
   get allProducts() {
-    return this.products.slice(
+    let products = this.products.filter((product) =>
+      product.title.toLowerCase().includes(this.searchedTerm.toLowerCase())
+    );
+
+    this.collectionSize = products.length;
+    this.resultEnd =
+      products.length < this.pageSize * this.page
+        ? products.length
+        : this.pageSize * this.page;
+
+    return products.slice(
       (this.page - 1) * this.pageSize,
       (this.page - 1) * this.pageSize + this.pageSize
     );
