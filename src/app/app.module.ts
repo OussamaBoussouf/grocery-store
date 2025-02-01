@@ -22,6 +22,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment.development';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from './product-form/product-form.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ProductFormComponent } from './product-form/product-form.component';
     OrderSuccessComponent,
     LoginComponent,
     ProductsComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserAnimationsModule,

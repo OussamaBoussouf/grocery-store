@@ -1,27 +1,19 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  DoCheck,
-  OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProductService } from '../services/product.service';
+import { Subscription } from 'rxjs';
+import { Product } from '../models/product';
 
-interface IProduct {
-  id?: number;
-  image: string;
-  title: string;
-  price: number;
-  category: string;
-}
+type IProduct = Product & {productId : string};
 
 @Component({
   selector: 'app-admin-products',
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css',
 })
-export class AdminProductsComponent implements OnInit {
+export class AdminProductsComponent implements OnInit, OnDestroy {
   products: IProduct[] = [];
+  filteredProducts: IProduct[] = [];
+  subscription: Subscription;
   searchedTerm = '';
   resultStart: number;
   resultEnd: number;
@@ -33,7 +25,7 @@ export class AdminProductsComponent implements OnInit {
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.productService.getAllProducs().subscribe((data) => {
+    this.subscription = this.productService.getAll().subscribe((data) => {
       this.products = data.map((product, index) => ({
         id: index + 1,
         ...product,
@@ -43,7 +35,11 @@ export class AdminProductsComponent implements OnInit {
     });
   }
 
-  sortColumn(columnName: keyof IProduct) {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  sortColumn(columnName: keyof Product) {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
 
     this.products = this.products

@@ -42,7 +42,9 @@
       <td>{{ product.id }}</td>
       <td>{{ product.title }}</td>
       <td>{{ product.price }}</td>
-      <td>Edit</td>
+      <td>
+        <a routerLink="{{product.productId}}">Edit</a>
+      </td>
     </tr>
     <tr *ngIf="allProducts.length === 0" class="text-center">
       <td colspan="4">No result found</td>

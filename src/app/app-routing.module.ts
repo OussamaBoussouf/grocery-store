@@ -13,12 +13,13 @@ import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { isLoggedInGuard } from './guards/is-logged-in.guard';
 import { ProductFormComponent } from './product-form/product-form.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [isLoggedInGuard]
+    canActivate: [isLoggedInGuard],
   },
   {
     path: 'products',
@@ -45,6 +46,11 @@ const routes: Routes = [
     canActivate: [authGuard, adminGuard],
   },
   {
+    path: 'admin/products/:id',
+    component: ProductFormComponent,
+    canActivate: [authGuard, adminGuard],
+  },
+  {
     path: 'admin/products',
     component: AdminProductsComponent,
     canActivate: [authGuard, adminGuard],
@@ -59,13 +65,17 @@ const routes: Routes = [
     component: ShoppingCartComponent,
   },
   {
+    path: 'not-found',
+    component: NotFoundComponent,
+  },
+  {
     path: '',
     component: HomeComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: '',
+    component: NotFoundComponent,
   },
 ];
 
