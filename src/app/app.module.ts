@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
+import { ToastrModule } from 'ngx-toastr';
+
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +20,9 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment.development';
+import { FormsModule } from '@angular/forms';
+import { ProductFormComponent } from './product-form/product-form.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -31,11 +36,16 @@ import { environment } from '../environments/environment.development';
     CheckoutComponent,
     OrderSuccessComponent,
     LoginComponent,
-    ProductsComponent
+    ProductsComponent,
+    ProductFormComponent,
+    NotFoundComponent
   ],
   imports: [
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     NgbModule,
     NgbDropdownModule
   ],

@@ -1,1 +1,65 @@
-<p>admin-products works!</p>
+<a routerLink="/admin/products/new" class="btn btn-primary mb-4">New Product</a>
+<input
+  ngModel
+  [(ngModel)]="searchedTerm"
+  #inputEle
+  type="text"
+  placeholder="Search..."
+  class="form-control mb-4"
+  aria-describedby="search"
+/>
+<div style="width: 130px" class="input-group float-end mb-3">
+  <span class="input-group-text">Limit</span>
+  <select
+    ngModel
+    name="pageSize"
+    [(ngModel)]="pageSize"
+    (change)="updateStartEndResult()"
+    class="form-select"
+    aria-label="Default select example"
+  >
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+  </select>
+</div>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col" (click)="sortColumn('title')">
+        <a role="button">Title</a>
+      </th>
+      <th scope="col" (click)="sortColumn('price')">
+        <a role="button">Price</a>
+      </th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of allProducts">
+      <td>{{ product.id }}</td>
+      <td>{{ product.title }}</td>
+      <td>{{ product.price }}</td>
+      <td>
+        <a routerLink="{{product.productId}}">Edit</a>
+      </td>
+    </tr>
+    <tr *ngIf="allProducts.length === 0" class="text-center">
+      <td colspan="4">No result found</td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="collectionSize !== 0" class="d-flex justify-content-between">
+  <span
+    >Results: {{ resultStart }} - {{ resultEnd }} / {{ collectionSize }}</span
+  >
+  <ngb-pagination
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    (pageChange)="updateStartEndResult()"
+    aria-label="Default pagination"
+  />
+</div>
