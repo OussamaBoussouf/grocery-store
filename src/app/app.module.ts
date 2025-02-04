@@ -23,6 +23,8 @@ import { environment } from '../environments/environment.development';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ProductFilterComponent } from './product-filter/product-filter.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { NotFoundComponent } from './not-found/not-found.component';
     LoginComponent,
     ProductsComponent,
     ProductFormComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ProductFilterComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserAnimationsModule,
