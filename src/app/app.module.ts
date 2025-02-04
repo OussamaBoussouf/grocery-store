@@ -6,7 +6,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { HomeComponent } from './home/home.component';
 import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
@@ -23,6 +23,8 @@ import { environment } from '../environments/environment.development';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ProductFilterComponent } from './product-filter/product-filter.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { NotFoundComponent } from './not-found/not-found.component';
     LoginComponent,
     ProductsComponent,
     ProductFormComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ProductFilterComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -47,7 +51,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AppRoutingModule,
     FormsModule,
     NgbModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    NgbNavModule
   ],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

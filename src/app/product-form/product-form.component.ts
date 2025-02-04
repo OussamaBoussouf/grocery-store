@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductService } from '../services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
+import { categories } from '../constants/constants';
 
 interface IPorudct {
   title: string;
@@ -26,6 +27,7 @@ export class ProductFormComponent {
   };
   productId: string | null;
   isLoading = false;
+  categories = categories;
 
   constructor(
     private toastr: ToastrService,

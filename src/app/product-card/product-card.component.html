@@ -1,0 +1,18 @@
+<div class="card">
+  <div *ngIf="product.imageUrl" class="ratio ratio-16x9">
+    <img
+      [src]="product.imageUrl"
+      class="card-img-top object-fit-cover"
+      alt="{{ product.title }}"
+    />
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ product.title }}</h5>
+    <p class="card-text">
+      {{ product.price | currency : "USD" }}
+    </p>
+  </div>
+  <div *ngIf="showActions" class="card-footer">
+    <button type="button" class="btn btn-primary w-100">Add to Cart</button>
+  </div>
+</div>
