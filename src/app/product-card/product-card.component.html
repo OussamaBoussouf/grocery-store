@@ -13,6 +13,32 @@
     </p>
   </div>
   <div *ngIf="showActions" class="card-footer">
-    <button type="button" class="btn btn-primary w-100">Add to Cart</button>
+    <button
+      *ngIf="getQuantity() === 0; else updateQuantity"
+      type="button"
+      class="btn btn-secondary w-100"
+      (click)="addToCart(product)"
+    >
+      Add to Cart
+    </button>
+    <ng-template #updateQuantity>
+      <div class="d-flex align-items-center">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="decrementQty(product.productId)"
+        >
+          -
+        </button>
+        <span class="flex-grow-1 text-center">{{ getQuantity() }} in cart</span>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="incrementQty(product.productId)"
+        >
+          +
+        </button>
+      </div>
+    </ng-template>
   </div>
 </div>

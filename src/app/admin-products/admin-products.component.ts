@@ -3,7 +3,7 @@ import { ProductService } from '../services/product.service';
 import { Subscription } from 'rxjs';
 import { Product } from '../models/product';
 
-type IProduct = Product & {productId : string};
+
 
 @Component({
   selector: 'app-admin-products',
@@ -11,8 +11,8 @@ type IProduct = Product & {productId : string};
   styleUrl: './admin-products.component.css',
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {
-  products: IProduct[] = [];
-  filteredProducts: IProduct[] = [];
+  products: Product[] = [];
+  filteredProducts: Product[] = [];
   subscription: Subscription;
   searchedTerm = '';
   resultStart: number;

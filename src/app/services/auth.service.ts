@@ -9,7 +9,7 @@ import {
   User,
 } from '@angular/fire/auth';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, switchMap } from 'rxjs';
 import { UserService } from './user.service';
 
 
