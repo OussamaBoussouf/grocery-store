@@ -3,6 +3,8 @@ import { AuthService } from '../services/auth.service';
 import { AppUser } from '../models/app-user';
 import { ShoppingCartService } from '../services/shopping-cart.service';
 import { ShoppingCart } from '../models/shopping-cart';
+import { ShoppingCartItem } from '../models/shopping-cart-item';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'navbar',
@@ -11,7 +13,8 @@ import { ShoppingCart } from '../models/shopping-cart';
 })
 export class NavbarComponent implements OnInit {
   appUser: AppUser | undefined;
-  totalItems = 0;
+  cartSubscription: Subscription;
+  cart$: Observable<ShoppingCart>;
 
   constructor(
     private authService: AuthService,
@@ -21,13 +24,18 @@ export class NavbarComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.cartService.getCart((docs) => {
-      let total = 0;
-      docs.forEach((doc) => {
-        total += (doc.data() as ShoppingCart).quantity;
-      });
-      this.totalItems = total;
+    this.cartService.cartId$.subscribe((cartId) => {
+      if (this.cartSubscription) this.cartSubscription.unsubscribe();
+      this.cart$ = this.cartService.getCart(cartId)
     });
+    // const cart$ = await this.cartService.getCart();
+    // cart$.subscribe((items) => {
+    //   let total = 0;
+    //   items.forEach((item) => {
+    //     total += item.quantity;
+    //   });
+    //   this.totalItems = total;
+    // })
   }
 
   logout() {

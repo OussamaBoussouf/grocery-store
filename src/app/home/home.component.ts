@@ -3,21 +3,20 @@ import { Product } from '../models/product';
 import { ProductService } from '../services/product.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, switchMap } from 'rxjs';
-import { ShoppingCart } from '../models/shopping-cart';
 import { ShoppingCartService } from '../services/shopping-cart.service';
-import { Unsubscribe } from '@angular/fire/auth';
+import { ShoppingCart } from '../models/shopping-cart';
 
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy {
   filteredProducts: Product[] = [];
   products: Product[] = [];
   categorySubscription: Subscription;
-  cartSubscription: Unsubscribe;
-  cart: ShoppingCart[] = [];
+  cartSubscription: Subscription;
+  cart: ShoppingCart;
 
   constructor(
     private productService: ProductService,
@@ -41,17 +40,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.cartSubscription = await this.cartService.getCart((docs) => {
-      const cart: ShoppingCart[] = [];
-      docs.forEach((doc) => {
-        cart.push(doc.data() as ShoppingCart);
-      });
-      this.cart = cart;
+    this.cartService.cartId$.subscribe((cartId) => {
+      if (this.cartSubscription) this.cartSubscription.unsubscribe();
+      this.cartSubscription = this.cartService
+        .getCart(cartId)
+        .subscribe((items) => (this.cart = items));
     });
   }
 
   ngOnDestroy(): void {
     this.categorySubscription.unsubscribe();
-    this.cartSubscription();
+    this.cartSubscription.unsubscribe();
   }
 }

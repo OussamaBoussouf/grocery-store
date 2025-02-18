@@ -11,7 +11,7 @@ import { ShoppingCart } from '../models/shopping-cart';
 export class ProductCardComponent {
   @Input('product') product: Product;
   @Input('show-actions') showActions = true;
-  @Input('shopping-cart') shoppingCart: ShoppingCart[];
+  @Input('shopping-cart') shoppingCart: ShoppingCart;
 
   constructor(private cartService: ShoppingCartService) {}
 
@@ -39,9 +39,7 @@ export class ProductCardComponent {
 
   getQuantity() {
     if (!this.shoppingCart) return 0;
-    let item = this.shoppingCart.find(
-      (item) => item.productId === this.product.productId
-    );
+    let item =this.shoppingCart.productQuantity(this.product.productId);
     return item ? item.quantity : 0;
   }
 }

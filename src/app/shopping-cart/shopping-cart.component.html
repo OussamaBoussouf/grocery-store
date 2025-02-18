@@ -1,1 +1,62 @@
-<p>shopping-cart works!</p>
+<ng-container *ngIf="cart$ | async as cart">
+  <h1>Shopping Cart</h1>
+  <p>You have {{ cart.totalItemsCount }} items in your shopping cart</p>
+  <table class="table" style="max-width: 700px">
+    <thead class="border-top">
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Product</th>
+        <th scope="col" class="text-center">Quantity</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cart of cart.items">
+        <th scope="row">
+          <img
+            width="80"
+            height="80"
+            class="rounded-pill object-fit-cover"
+            src="{{ cart.imageUrl }}"
+            alt="{{ cart.title }}"
+          />
+        </th>
+        <td>{{ cart.title }}</td>
+        <td style="width: 250px">
+          <div class="d-flex justify-content-center">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="decrementQuantity(cart.productId)"
+            >
+              -
+            </button>
+            <span class="px-3">{{ cart.quantity }} in cart</span>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="incrementQuantity(cart.productId)"
+            >
+              +
+            </button>
+          </div>
+        </td>
+        <td>{{ cart.price * cart.quantity | currency : "USD" }}</td>
+      </tr>
+    </tbody>
+    <tfoot class="border-bottom">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th class="py-2">{{ cart.totalPrice | currency : "USD" }}</th>
+    </tfoot>
+  </table>
+  <button
+    *ngIf="cart.totalItemsCount > 0"
+    type="button"
+    class="btn btn-danger"
+    (click)="clearCart()"
+  >
+    Clear Shopping Cart
+  </button>
+</ng-container>
