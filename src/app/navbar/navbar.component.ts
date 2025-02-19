@@ -3,8 +3,8 @@ import { AuthService } from '../services/auth.service';
 import { AppUser } from '../models/app-user';
 import { ShoppingCartService } from '../services/shopping-cart.service';
 import { ShoppingCart } from '../models/shopping-cart';
-import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Observable, Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'navbar',
@@ -20,7 +20,6 @@ export class NavbarComponent implements OnInit {
     private authService: AuthService,
     private cartService: ShoppingCartService
   ) {
-    this.authService.appUser$.subscribe((user) => (this.appUser = user));
   }
 
   async ngOnInit() {
@@ -28,14 +27,9 @@ export class NavbarComponent implements OnInit {
       if (this.cartSubscription) this.cartSubscription.unsubscribe();
       this.cart$ = this.cartService.getCart(cartId)
     });
-    // const cart$ = await this.cartService.getCart();
-    // cart$.subscribe((items) => {
-    //   let total = 0;
-    //   items.forEach((item) => {
-    //     total += item.quantity;
-    //   });
-    //   this.totalItems = total;
-    // })
+    this.authService.user$.subscribe((user) => {
+      this.appUser = user
+    });
   }
 
   logout() {

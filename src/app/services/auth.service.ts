@@ -6,30 +6,34 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signOut,
-  User,
 } from '@angular/fire/auth';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { UserService } from './user.service';
-
+import { AppUser } from '../models/app-user';
+import { ShoppingCartService } from './shopping-cart.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService implements OnDestroy {
-  private connectedUser = new BehaviorSubject<User | null>(null);
+  private connectedUser = new BehaviorSubject<AppUser | undefined>(undefined);
   private unsubscribeAuthState: (() => void) | null = null;
 
-  private user$ = this.connectedUser.asObservable();
+  user$ = this.connectedUser.asObservable();
 
   constructor(
     private auth: Auth,
     private userService: UserService,
+    private cartService: ShoppingCartService,
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.unsubscribeAuthState = onAuthStateChanged(this.auth, (user) => {
-      this.connectedUser.next(user);
+    this.unsubscribeAuthState = onAuthStateChanged(this.auth, async (user) => {
+      if (user && localStorage.getItem('user')) {
+        const appUser = await this.userService.get(user.uid);
+        this.connectedUser.next(appUser);
+      }
     });
   }
 
@@ -37,25 +41,20 @@ export class AuthService implements OnDestroy {
     if (this.unsubscribeAuthState) this.unsubscribeAuthState();
   }
 
-  get appUser$(){
-    return this.user$.pipe(
-      switchMap(user => {
-        return this.userService.get(user?.uid);
-      })
-    )
-  }
-
   async logInWithGoogle() {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(this.auth, provider);
-      const user = result.user;
 
       //save user records to db if it doesn't already exist
-      const appUser = await this.userService.save(user);
+      const appUser = await this.userService.save(result.user);
+
+  
+      if (appUser) this.cartService.linkOrCreate(appUser.id);
+
+      this.connectedUser.next(appUser);
 
       localStorage.setItem('user', JSON.stringify(appUser));
-    
 
       const returnUrl =
         this.route.snapshot.queryParamMap.get('returnUrl') || '/';
@@ -72,6 +71,8 @@ export class AuthService implements OnDestroy {
   async logOut() {
     try {
       await signOut(this.auth);
+      this.cartService.removeCartId();
+      this.connectedUser.next(undefined);
       localStorage.removeItem('user');
       this.router.navigate(['/']);
     } catch (error) {

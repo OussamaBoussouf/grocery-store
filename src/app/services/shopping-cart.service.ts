@@ -16,6 +16,7 @@ import { Product } from '../models/product';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ShoppingCart } from '../models/shopping-cart';
+import { AppUser } from '../models/app-user';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +64,11 @@ export class ShoppingCartService {
     }
   }
 
+  removeCartId() {
+    localStorage.removeItem('cartId');
+    this.cartIdSubject.next(null);
+  }
+
   async addToCart(product: Product) {
     try {
       const cartId = await this.getOrCreateCartId();
@@ -105,6 +111,67 @@ export class ShoppingCartService {
       );
       return () => unsubscribe();
     });
+  }
+
+  async linkOrCreate(userId: string) {
+    try {
+      const userDocRef = doc(this.fireStore, `users/${userId}`);
+      const user = await getDoc(userDocRef);
+      const userCartId = (user.data() as AppUser).cartId;
+
+      //Add cartId to user who don't have one
+      if (!userCartId) {
+        const cartId = await this.getOrCreateCartId();
+        await updateDoc(userDocRef, { cartId });
+        return;
+      }
+
+      const guestCartId = localStorage.getItem('cartId');
+      if (!guestCartId) {
+        localStorage.setItem('cartId', userCartId);
+        this.cartIdSubject.next(userCartId);
+        return
+      }
+
+      //Link guest cart with the logged in user cart
+      const { docs: guestCartDocs } = await getDocs(
+        collection(this.fireStore, `shopping-carts/${guestCartId}/basket`)
+      );
+      const { docs: userCartDocs } = await getDocs(
+        collection(this.fireStore, `shopping-carts/${userCartId}/basket`)
+      );
+
+      const userCartIds = userCartDocs.map((item) => item.id);
+
+      for (let i = 0; i < guestCartDocs.length; i++) {
+        const item = guestCartDocs[i];
+        const product = doc(
+          this.fireStore,
+          `shopping-carts/${userCartId}/basket/${item.id}`
+        );
+        if (userCartIds.includes(item.id)) {
+          await updateDoc(product, {
+            quantity: increment((item.data() as ShoppingCartItem).quantity),
+          });
+        } else {
+          await setDoc(product, item.data());
+        }
+      }
+
+      this.deleteGuestCart();
+      localStorage.setItem('cartId', userCartId);
+      this.cartIdSubject.next(userCartId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async deleteGuestCart() {
+    //delete basket content
+    this.clearCart();
+    //delete shopping-cart
+    const cartId = await this.getOrCreateCartId();
+    await deleteDoc(doc(this.fireStore, `shopping-carts/${cartId}`));
   }
 
   private create() {
