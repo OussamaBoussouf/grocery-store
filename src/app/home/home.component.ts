@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Product } from '../models/product';
 import { ProductService } from '../services/product.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription, switchMap } from 'rxjs';
-import { categories } from '../constants/constants';
+import { ShoppingCartService } from '../services/shopping-cart.service';
+import { ShoppingCart } from '../models/shopping-cart';
 
 @Component({
   selector: 'home',
@@ -13,13 +14,16 @@ import { categories } from '../constants/constants';
 export class HomeComponent implements OnDestroy {
   filteredProducts: Product[] = [];
   products: Product[] = [];
-  subscription: Subscription;
+  categorySubscription: Subscription;
+  cartSubscription: Subscription;
+  cart: ShoppingCart;
 
   constructor(
     private productService: ProductService,
+    private cartService: ShoppingCartService,
     private route: ActivatedRoute
   ) {
-    this.subscription = this.productService
+    this.categorySubscription = this.productService
       .getAll()
       .pipe(
         switchMap((products) => {
@@ -35,7 +39,17 @@ export class HomeComponent implements OnDestroy {
       });
   }
 
+  async ngOnInit() {
+    this.cartService.cartId$.subscribe((cartId) => {
+      if (this.cartSubscription) this.cartSubscription.unsubscribe();
+      this.cartSubscription = this.cartService
+        .getCart(cartId)
+        .subscribe((items) => (this.cart = items));
+    });
+  }
+
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.categorySubscription.unsubscribe();
+    this.cartSubscription.unsubscribe();
   }
 }

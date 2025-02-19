@@ -5,13 +5,9 @@ import { ProductService } from '../services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
 import { categories } from '../constants/constants';
+import { Product } from '../models/product';
 
-interface IPorudct {
-  title: string;
-  price: number;
-  category: string;
-  imageUrl: string;
-}
+
 
 @Component({
   selector: 'app-product-form',
@@ -19,11 +15,12 @@ interface IPorudct {
   styleUrl: './product-form.component.css',
 })
 export class ProductFormComponent {
-  product: IPorudct = {
+  product: Product = {
     price: 0,
     category: '',
     imageUrl: '',
     title: '',
+    productId: ''
   };
   productId: string | null;
   isLoading = false;
