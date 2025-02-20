@@ -1,6 +1,16 @@
 <ng-container *ngIf="cart$ | async as cart">
   <h1>Shopping Cart</h1>
-  <p>You have {{ cart.totalItemsCount }} items in your shopping cart</p>
+  <p>
+    You have {{ cart.totalItemsCount }} items in your shopping cart.
+    <button
+      *ngIf="cart.totalItemsCount > 0"
+      type="button"
+      class="btn btn-danger"
+      (click)="clearCart()"
+    >
+      Clear Shopping Cart
+    </button>
+  </p>
   <table class="table" style="max-width: 700px">
     <thead class="border-top">
       <tr>
@@ -51,12 +61,5 @@
       <th class="py-2">{{ cart.totalPrice | currency : "USD" }}</th>
     </tfoot>
   </table>
-  <button
-    *ngIf="cart.totalItemsCount > 0"
-    type="button"
-    class="btn btn-danger"
-    (click)="clearCart()"
-  >
-    Clear Shopping Cart
-  </button>
+  <button routerLink="/check-out" type="button" class="btn btn-primary" *ngIf="cart.totalItemsCount > 0">Check Out</button>
 </ng-container>
