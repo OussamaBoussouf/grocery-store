@@ -25,6 +25,9 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ProductFilterComponent } from './product-filter/product-filter.component';
 import { ProductCardComponent } from './product-card/product-card.component';
+import { OrdersComponent } from './orders/orders.component';
+import { ShoppingFormComponent } from './shopping-form/shopping-form.component';
+import { ShoppingCartSummaryComponent } from './shopping-cart-summary/shopping-cart-summary.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,10 @@ import { ProductCardComponent } from './product-card/product-card.component';
     ProductFormComponent,
     NotFoundComponent,
     ProductFilterComponent,
-    ProductCardComponent
+    ProductCardComponent,
+    OrdersComponent,
+    ShoppingFormComponent,
+    ShoppingCartSummaryComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -52,7 +58,7 @@ import { ProductCardComponent } from './product-card/product-card.component';
     FormsModule,
     NgbModule,
     NgbDropdownModule,
-    NgbNavModule
+    NgbNavModule,
   ],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

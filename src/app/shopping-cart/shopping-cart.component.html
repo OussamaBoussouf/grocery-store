@@ -61,5 +61,5 @@
       <th class="py-2">{{ cart.totalPrice | currency : "USD" }}</th>
     </tfoot>
   </table>
-  <button routerLink="/check-out" type="button" class="btn btn-primary" *ngIf="cart.totalItemsCount > 0">Check Out</button>
+  <a routerLink="/check-out" type="button" class="btn btn-primary" *ngIf="cart.totalItemsCount > 0">Check Out</a>
 </ng-container>
