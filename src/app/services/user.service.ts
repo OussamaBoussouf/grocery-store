@@ -4,13 +4,12 @@ import { doc, Firestore, getDoc } from '@angular/fire/firestore';
 import { setDoc } from '@firebase/firestore';
 import { AppUser } from '../models/app-user';
 import { FirebaseError } from '@angular/fire/app';
-import { ShoppingCartService } from './shopping-cart.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private firestore: Firestore, private cartService:ShoppingCartService) {}
+  constructor(private firestore: Firestore) {}
 
   async save(user: User) {
     try {

@@ -1,42 +1,9 @@
 <h1>Shipping</h1>
 <div class="row" *ngIf="cart$ | async as cart">
   <div class="col-6">
-    <form (ngSubmit)="onSubmit(shippingInfo)" #shippingInfo="ngForm">
-      <div class="mb-3">
-        <label class="form-label" for="name">Name</label
-        ><input class="form-control" type="text" name="name" id="name" required ngModel #name="ngModel" />
-        <p class="text-danger" *ngIf="name.touched && name.errors?.['required']">Name is requried</p>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="address">Address</label
-        ><input class="form-control" type="text" name="address" id="address" required ngModel #address="ngModel" />
-        <p class="text-danger" *ngIf="address.touched && address.errors?.['required']">Address is requried</p>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="city">City</label
-        ><input class="form-control" type="text" name="city" id="city" required ngModel #city="ngModel" />
-        <p class="text-danger" *ngIf="city.touched && city.errors?.['required']">City is requried</p>
-      </div>
-      <button [disabled]="shippingInfo.invalid || cart.totalItemsCount < 1" class="btn btn-primary" type="submit">Place Order</button>
-    </form>
+    <app-shopping-form [cart]="cart"></app-shopping-form>
   </div>
   <div class="col-6">
-    <div class="border p-4 rounded-3">
-      <h2>Order summary</h2>
-      <p>You have {{cart.totalItemsCount}} items in you shopping cart.</p>
-      <ul class="list-group list-group-flush">
-        <li
-          *ngFor="let item of cart.items"
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span>{{item.quantity}} x {{item.title}}</span> <span>{{item.price | currency:"USD"}}</span>
-        </li>
-        <li
-          class="list-group-item fw-bold d-flex justify-content-between align-items-center"
-        >
-          <span>Total</span><span>{{cart.totalPrice | currency:"USD"}}</span>
-        </li>
-      </ul>
-    </div>
+    <app-shopping-cart-summary [cart]="cart"></app-shopping-cart-summary>
   </div>
 </div>

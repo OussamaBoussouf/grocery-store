@@ -1,0 +1,62 @@
+<h1>Orders</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Customer</th>
+      <th scope="col">Date</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of orders">
+      <th scope="row">{{ order.shipping.name }}</th>
+      <td>{{ order.createdAt | date : "mediumDate" }}</td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="open(content)">
+          view items
+        </button>
+        <ng-template #content let-modal>
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="order-info">List of items</h1>
+            <button
+              (click)="modal.dismiss()"
+              type="button"
+              class="btn-close"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Title</th>
+                  <th scope="col" class="text-center">Quantity</th>
+                  <th scope="col" class="text-center">Total Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of order.items">
+                  <td>
+                    <img
+                      width="60"
+                      height="60"
+                      class="rounded-pill object-fit-cover"
+                      src="{{ item.imageUrl }}"
+                      alt="{{ item.title }}"
+                    />
+                  </td>
+                  <td>{{ item.title }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-center">
+                    {{ item.quantity * item.price | currency : "USD" }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,60 @@
+<form
+  (ngSubmit)="onSubmit()"
+  #shippingInfo="ngForm"
+>
+  <div class="mb-3">
+    <label class="form-label" for="name">Name</label
+    ><input
+      class="form-control"
+      type="text"
+      name="name"
+      id="name"
+      required
+      [(ngModel)]="shipping.name"
+      #name="ngModel"
+    />
+    <p class="text-danger" *ngIf="name.touched && name.errors?.['required']">
+      Name is requried
+    </p>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="address">Address</label
+    ><input
+      class="form-control"
+      type="text"
+      name="address"
+      id="address"
+      required
+      [(ngModel)]="shipping.address"
+      #address="ngModel"
+    />
+    <p
+      class="text-danger"
+      *ngIf="address.touched && address.errors?.['required']"
+    >
+      Address is requried
+    </p>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="city">City</label
+    ><input
+      class="form-control"
+      type="text"
+      name="city"
+      id="city"
+      required
+      [(ngModel)]="shipping.city"
+      #city="ngModel"
+    />
+    <p class="text-danger" *ngIf="city.touched && city.errors?.['required']">
+      City is requried
+    </p>
+  </div>
+  <button
+    [disabled]="shippingInfo.invalid || cart.totalItemsCount < 1"
+    class="btn btn-primary"
+    type="submit"
+  >
+    Place Order
+  </button>
+</form>

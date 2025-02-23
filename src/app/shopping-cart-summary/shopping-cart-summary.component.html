@@ -1,0 +1,18 @@
+<div class="border p-4 rounded-3">
+  <h2>Order summary</h2>
+  <p>You have {{ cart.totalItemsCount }} items in you shopping cart.</p>
+  <ul class="list-group list-group-flush">
+    <li
+      *ngFor="let item of cart.items"
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>{{ item.quantity }} x {{ item.title }}</span>
+      <span>{{ item.price | currency : "USD" }}</span>
+    </li>
+    <li
+      class="list-group-item fw-bold d-flex justify-content-between align-items-center"
+    >
+      <span>Total</span><span>{{ cart.totalPrice | currency : "USD" }}</span>
+    </li>
+  </ul>
+</div>
